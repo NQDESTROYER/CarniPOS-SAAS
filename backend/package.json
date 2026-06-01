@@ -1,0 +1,37 @@
+{
+  "name": "carnipos-saas",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "npx tsx watch src/server.ts",
+    "start": "npx tsx src/server.ts",
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NQDESTROYER/CarniPOS-SAAS.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/NQDESTROYER/CarniPOS-SAAS/issues"
+  },
+  "homepage": "https://github.com/NQDESTROYER/CarniPOS-SAAS#readme",
+  "dependencies": {
+    "@fastify/cors": "^11.2.0",
+    "@fastify/helmet": "^13.0.2",
+    "@fastify/swagger": "^9.7.0",
+    "@fastify/swagger-ui": "^5.2.6",
+    "@prisma/client": "^5.22.0",
+    "@supabase/supabase-js": "^2.106.2",
+    "dotenv": "^17.4.2",
+    "fastify": "^5.8.5",
+    "prisma": "^5.22.0",
+    "tsx": "^4.22.4",
+    "zod": "^4.4.3"
+  }
+}
