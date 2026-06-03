@@ -7,6 +7,7 @@ import { InventoryController } from './controllers/inventory.controller';
 import { POSController } from './controllers/pos.controller';
 import { CatalogController } from './controllers/catalog.controller';
 import { ShiftController, CustomerController } from './controllers/finance.controller';
+import { SettingsController } from './controllers/settings.controller';
 
 const fastify = Fastify({
   logger: true,
@@ -19,9 +20,35 @@ async function bootstrap() {
     origin: true,
   });
 
+  // Manejo de Errores Global
+  fastify.setErrorHandler((error, request, reply) => {
+    fastify.log.error(error);
+    
+    if (error.validation) {
+      return reply.status(400).send({
+        error: 'Validation Error',
+        message: error.message,
+        details: error.validation
+      });
+    }
+
+    const statusCode = error.statusCode || 500;
+    const message = statusCode === 500 ? 'Internal Server Error' : error.message;
+
+    reply.status(statusCode).send({
+      error: error.name || 'Error',
+      message,
+    });
+  });
+
   // Health Check
   fastify.get('/health', async () => {
     return { status: 'ok', timestamp: new Date().toISOString() };
+  });
+
+  // Root Route
+  fastify.get('/', async () => {
+    return { message: 'CarniPOS API is running', version: '1.0.0' };
   });
 
   // API V1 - RUTAS PROTEGIDAS MULTI-TENANT
@@ -41,10 +68,16 @@ async function bootstrap() {
     api.post('/ventas', POSController.createVenta);
 
     // Módulo: Finanzas y Caja
+    api.get('/caja/activo', ShiftController.getActiveShift);
     api.post('/caja/abrir', ShiftController.openShift);
     api.post('/caja/cerrar', ShiftController.closeShift);
     api.get('/clientes', CustomerController.listCustomers);
+    api.post('/clientes', CustomerController.createCustomer);
     api.post('/clientes/pagar', CustomerController.addPayment);
+
+    // Módulo: Configuración
+    api.get('/settings', SettingsController.getSettings);
+    api.patch('/settings', SettingsController.updateSettings);
 
     api.get('/me', async (request) => {
       return {

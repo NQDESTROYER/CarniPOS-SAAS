@@ -87,7 +87,7 @@ export const InventoryController = {
 
       // 3. Marcar lote como despostado
       await tx.lote.update({
-        where: { id: lote_id },
+        where: { id: lote_id, tenant_id: request.tenantId },
         data: { esta_despostado: true, peso_actual: 0 },
       });
 

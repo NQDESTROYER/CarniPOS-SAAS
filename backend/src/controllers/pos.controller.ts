@@ -85,7 +85,7 @@ export const POSController = {
 
         // Aumentar deuda
         await tx.cliente.update({
-          where: { id: body.cliente_id },
+          where: { id: body.cliente_id, tenant_id: request.tenantId },
           data: {
             deuda_total: { increment: totalVenta },
             credito_disponible: { decrement: totalVenta }
@@ -105,7 +105,7 @@ export const POSController = {
       } else if (body.metodo_pago === 'EFECTIVO') {
         // Si es efectivo, sumar al esperado del turno
         await tx.turnoCaja.update({
-          where: { id: body.turno_id },
+          where: { id: body.turno_id, tenant_id: request.tenantId },
           data: { 
             total_ventas_dia: { increment: totalVenta },
             total_esperado_efectivo: { increment: totalVenta }

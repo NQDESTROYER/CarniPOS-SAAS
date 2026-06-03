@@ -16,8 +16,11 @@ export async function authMiddleware(request: FastifyRequest, reply: FastifyRepl
     return reply.status(401).send({ message: 'Invalid or expired token', error: error?.message });
   }
 
-  // Extraer tenant_id de las metadata del usuario en Supabase
-  const tenantId = user.user_metadata?.tenant_id;
+  // Extraer tenant_id de las metadata del usuario (app_metadata o user_metadata)
+  const tenantId = user.app_metadata?.tenant_id || user.user_metadata?.tenant_id;
+  
+  console.log('DEBUG: Middleware extracted tenantId:', tenantId);
+  console.log('DEBUG: Full user object:', JSON.stringify(user, null, 2));
 
   if (!tenantId) {
     return reply.status(403).send({ message: 'User not associated with any tenant' });
